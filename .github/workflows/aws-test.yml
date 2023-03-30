@@ -12,6 +12,10 @@ env:
   AWS_TEST_PACKAGE_ARN: arn:aws:devicefarm:us-west-2:320005014399:upload:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4/6a464266-e3cc-463a-9135-a10b0713e7e7
   RUN_ARN: arn:aws:devicefarm:us-west-2:320005014399:run:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4/04b6bd43-c5b8-485a-8c9f-6aa202f46c99
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   trigger:
     runs-on: macos-latest
@@ -40,18 +44,6 @@ jobs:
       uses: realm/aws-devicefarm/get-run@master
       with:
         run_arn: ${{ env.RUN_ARN}}
-
-#    - name: Schedule a test run
-#      id: schedule_run
-#      uses: realm/aws-devicefarm/schedule-run@master
-#      with:
-#        name: schedule_run from workflow
-#        project_arn: ${{ env.AWS_PROJECT_ARN }}
-#        device_pool_arn: ${{ env.AWS_DEVICE_POOL_ARN }}
-#        app_arn: ${{ env.AWS_IPA_APP_ARN }}
-#        test_type: XCUI_TEST
-#        test_package_arn: ${{ env.AWS_TEST_PACKAGE_ARN }}
-#        test_spec_arn: ${{ env.AWS_TEST_SPEC_ARN }}
 
     - name: test type
       run: |
