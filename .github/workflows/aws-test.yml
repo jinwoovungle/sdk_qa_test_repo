@@ -1,0 +1,61 @@
+name: AWS Test
+
+on:
+  push:
+    branches:
+      - master
+env:
+  AWS_PROJECT_ARN: arn:aws:devicefarm:us-west-2:320005014399:project:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4
+  AWS_DEVICE_POOL_ARN: arn:aws:devicefarm:us-west-2:320005014399:devicepool:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4/3acad2d2-7494-424f-a100-d006e3a187d9
+  AWS_IPA_APP_ARN: arn:aws:devicefarm:us-west-2:320005014399:upload:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4/c4193f35-cd80-4e3f-a128-5414f04b9ff8
+  AWS_TEST_SPEC_ARN: arn:aws:devicefarm:us-west-2:320005014399:upload:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4/a68a66b1-7503-4682-8b20-0e3313cf40d5
+  AWS_TEST_PACKAGE_ARN: arn:aws:devicefarm:us-west-2:320005014399:upload:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4/6a464266-e3cc-463a-9135-a10b0713e7e7
+  RUN_ARN: arn:aws:devicefarm:us-west-2:320005014399:run:1c28863f-e516-44c7-82e4-3d7bfa4dbdb4/04b6bd43-c5b8-485a-8c9f-6aa202f46c99
+
+jobs:
+  trigger:
+    runs-on: macos-latest
+    name: AWS Test
+
+    steps:
+    - name: Assume github action role
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        role-to-assume: "arn:aws:iam::320005014399:role/github-action"
+        aws-region: us-west-2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
+        aws-region: us-west-2
+        role-to-assume: arn:aws:iam::320005014399:role/ViewMasterRole
+        role-skip-session-tagging: true
+        role-duration-seconds: 3600
+
+    - name: get runs
+      id: get-run
+      uses: realm/aws-devicefarm/get-run@master
+      with:
+        run_arn: ${{ env.RUN_ARN}}
+
+#    - name: Schedule a test run
+#      id: schedule_run
+#      uses: realm/aws-devicefarm/schedule-run@master
+#      with:
+#        name: schedule_run from workflow
+#        project_arn: ${{ env.AWS_PROJECT_ARN }}
+#        device_pool_arn: ${{ env.AWS_DEVICE_POOL_ARN }}
+#        app_arn: ${{ env.AWS_IPA_APP_ARN }}
+#        test_type: XCUI_TEST
+#        test_package_arn: ${{ env.AWS_TEST_PACKAGE_ARN }}
+#        test_spec_arn: ${{ env.AWS_TEST_SPEC_ARN }}
+
+    - name: test type
+      run: |
+        ls -al
+        echo ${{ steps.get-run.output.data }}
+
+    
