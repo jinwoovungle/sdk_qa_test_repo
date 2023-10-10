@@ -1,0 +1,21 @@
+name: git Checkout Test
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  ios-sdk-test:
+    env:
+      PROJECT_DIRECTORY: vungle-v7
+      PAYLOADS_DIRECTORY: ios-automation-tests/IOS-Functional-Tests/Payloads
+
+    steps:
+      - name: Checkout the latest branch
+        uses: actions/checkout@v3
+
+      - name: check env
+        run : |
+          ls -al
+        working-directory: ${{ env.PROJECT_DIRECTORY }}
