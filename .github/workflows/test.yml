@@ -10,6 +10,7 @@ jobs:
     env:
       PROJECT_DIRECTORY: vungle-v7
       PAYLOADS_DIRECTORY: ios-automation-tests/IOS-Functional-Tests/Payloads
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout the latest branch
